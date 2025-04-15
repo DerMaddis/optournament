@@ -28,6 +28,7 @@ func New(log *slog.Logger) *Handler {
 
 	handler.registerStatic()
 	handler.registerRoutes()
+	handler.registerMiddleware()
 
 	return handler
 }

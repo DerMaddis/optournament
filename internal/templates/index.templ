@@ -1,6 +1,8 @@
 package templates
 
-templ Index() {
+import "github.com/dermaddis/op_tournament/internal/handler/customcontext"
+
+templ Index(customContext *customcontext.CustomContext) {
 	<html>
 		<head>
 			<title>OpTournament</title>
@@ -8,7 +10,11 @@ templ Index() {
 			<script src="/static/js/ws.min.js"></script>
 		</head>
 		<body>
-			@Main()
+			if customContext.LoggedIn {
+				@Main(customContext.DiscordUser)
+			} else {
+				<a href="/auth/login">Login</a>
+			}
 		</body>
 	</html>
 }

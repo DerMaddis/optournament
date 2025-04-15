@@ -12,7 +12,9 @@ import (
 )
 
 func Run() {
-	log := slog.New(slog.NewTextHandler(os.Stdout, nil))
+	log := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelInfo,
+	}))
 
 	handler := handler.New(log)
 

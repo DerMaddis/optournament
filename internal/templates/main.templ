@@ -1,7 +1,9 @@
 package templates
 
-templ Main() {
-	<main id="main" hx-ext="ws" ws-connect="/connect">
-		<h1 id="header=">Header</h1>
-	</main>
+import "github.com/dermaddis/op_tournament/internal/model/discord"
+
+templ Main(discordUser discord.APIUser) {
+	<main id="main" hx-ext="ws" ws-connect="/connect"></main>
+	<h1>Hey, { discordUser.Username }</h1>
+	<h1 id="header">Header</h1>
 }
