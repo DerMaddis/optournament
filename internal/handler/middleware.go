@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	discordCfg "github.com/dermaddis/op_tournament/internal/config/discord"
 	"github.com/dermaddis/op_tournament/internal/handler/customcontext"
 	"github.com/dermaddis/op_tournament/internal/model/discord"
 	"github.com/golang-jwt/jwt"
@@ -18,17 +19,6 @@ import (
 
 func (h *Handler) registerMiddleware() {
 	h.e.Use(h.userMiddleware)
-}
-
-var discordConfig = oauth2.Config{
-	ClientID:     "1361645240305455184",
-	ClientSecret: "MKUrjpUgaH0q5MWcRP2gAl0q4U-WPCtc",
-	Endpoint: oauth2.Endpoint{
-		AuthURL:  "https://discord.com/oauth2/authorize",
-		TokenURL: "https://discord.com/api/oauth2/token",
-	},
-	RedirectURL: "http://localhost:3000/auth/redirect",
-	Scopes:      []string{"identify"},
 }
 
 func (h *Handler) userMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
@@ -47,7 +37,7 @@ func (h *Handler) userMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			return next(customContext)
 		}
 
-		token, err := jwt.Parse(jwtCookie.Value, func(t *jwt.Token) (interface{}, error) {
+		token, err := jwt.Parse(jwtCookie.Value, func(t *jwt.Token) (any, error) {
 			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, nil
 			}
@@ -71,7 +61,7 @@ func (h *Handler) userMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			Expiry:       expiry,
 		}
 
-		tokenSource := discordConfig.TokenSource(c.Request().Context(), &oauthToken)
+		tokenSource := discordCfg.DiscordConfig.TokenSource(c.Request().Context(), &oauthToken)
 
 		client := oauth2.NewClient(c.Request().Context(), tokenSource)
 

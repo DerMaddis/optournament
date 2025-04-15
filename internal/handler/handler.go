@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/dermaddis/op_tournament/internal/handler/routes/auth"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 )
@@ -14,6 +15,11 @@ type Handler struct {
 	e        *echo.Echo
 	log      *slog.Logger
 	upgrader *websocket.Upgrader
+	routers  routers
+}
+
+type routers struct {
+	auth *auth.AuthRouter
 }
 
 func New(log *slog.Logger) *Handler {
@@ -24,6 +30,9 @@ func New(log *slog.Logger) *Handler {
 		e:        e,
 		log:      log,
 		upgrader: &upgrader,
+		routers: routers{
+			auth: auth.New(e.Group("/auth"), log),
+		},
 	}
 
 	handler.registerStatic()
