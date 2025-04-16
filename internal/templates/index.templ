@@ -9,7 +9,7 @@ templ Index(customContext *customcontext.CustomContext) {
 			<script src="/static/js/htmx.min.js"></script>
 			<script src="/static/js/ws.min.js"></script>
 		</head>
-		<body>
+		<body style="background: #282a2f;">
 			if customContext.LoggedIn {
 				@Main(customContext.DiscordUser)
 			} else {
