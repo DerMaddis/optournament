@@ -90,7 +90,7 @@ func TestTournament(t *testing.T) {
 
 	// ---------------------------- Depth 0
 
-	assert.Equal(len(tournament.matchups[0]), 8)
+	assert.Equal(8, len(tournament.matchups[0]))
 	for i, matchup := range tournament.matchups[0] {
 		assert.Equal(&songs[i*2], matchup.Song1)
 		assert.Equal(&songs[i*2+1], matchup.Song2)
