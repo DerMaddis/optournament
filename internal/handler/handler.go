@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/dermaddis/op_tournament/internal/handler/routes/auth"
+	"github.com/dermaddis/op_tournament/internal/handler/routes/ws"
 	"github.com/dermaddis/op_tournament/internal/websocket"
 	"github.com/labstack/echo/v4"
 )
@@ -20,6 +21,7 @@ type Handler struct {
 
 type routers struct {
 	auth *auth.AuthRouter
+	ws   *ws.WsRouter
 }
 
 func New(wsHandler *websocket.WebsocketHandler, log *slog.Logger) *Handler {
@@ -30,6 +32,7 @@ func New(wsHandler *websocket.WebsocketHandler, log *slog.Logger) *Handler {
 		log: log,
 		routers: routers{
 			auth: auth.New(e.Group("/auth"), log),
+			ws:   ws.New(e.Group("/ws"), wsHandler, log),
 		},
 	}
 
