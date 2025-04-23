@@ -3,21 +3,19 @@ package templates
 import "github.com/dermaddis/op_tournament/internal/handler/customcontext"
 
 templ Index(customContext *customcontext.CustomContext) {
-<html>
-
-<head>
-    <title>OpTournament</title>
-    <script src="/static/js/htmx.min.js"></script>
-    <script src="/static/js/ws.min.js"></script>
-</head>
-
-<body hx-ext="ws" ws-connect="/ws/connect" style="background: #282a2f;">
-    if customContext.LoggedIn {
-    @Main(customContext.DiscordUser)
-    } else {
-    <a href="/auth/login">Login</a>
-    }
-</body>
-
-</html>
+	<html>
+		<head>
+			<title>OpTournament</title>
+			<script src="/static/js/htmx.min.js"></script>
+			<script src="/static/js/ws.min.js"></script>
+			<link rel="stylesheet" href="/static/css/tournament.css"/>
+		</head>
+		<body hx-ext="ws" ws-connect="/ws/connect" style="background: #282a2f;color:white;">
+			if customContext.LoggedIn {
+				{ children... }
+			} else {
+				<a href="/auth/login">Login</a>
+			}
+		</body>
+	</html>
 }

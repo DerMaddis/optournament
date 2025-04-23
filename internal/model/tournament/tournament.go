@@ -6,6 +6,7 @@ import (
 
 	"github.com/dermaddis/op_tournament/internal/errs"
 	"github.com/dermaddis/op_tournament/internal/sliceutils"
+	"github.com/rs/xid"
 )
 
 type Song struct {
@@ -13,6 +14,7 @@ type Song struct {
 }
 
 type Tournament struct {
+	Id    string
 	Songs []Song
 
 	// Depth is the number of rounds.
@@ -21,7 +23,7 @@ type Tournament struct {
 	// 6 songs =>
 	Depth int
 
-	matchups [][]*Matchup
+	Matchups [][]*Matchup
 
 	currentDepth   int
 	currentMatchup int
@@ -38,6 +40,8 @@ type Matchup struct {
 }
 
 func New(songs []Song) (Tournament, error) {
+	id := xid.New()
+
 	n := len(songs)
 	if n < 2 {
 		return Tournament{}, errs.ErrBadSongCount
@@ -50,8 +54,6 @@ func New(songs []Song) (Tournament, error) {
 
 	// Depth is 0-based so a finale-only match has a depth of 0
 	depth := int(math.Log2(float64(n / 2)))
-	fmt.Printf("n: %v\n", n)
-	fmt.Printf("depth: %v\n", depth)
 
 	matchups := make([][]*Matchup, depth+1)
 
@@ -69,16 +71,17 @@ func New(songs []Song) (Tournament, error) {
 	}
 
 	return Tournament{
+		Id:             id.String(),
 		Songs:          songs,
 		Depth:          depth,
-		matchups:       matchups,
+		Matchups:       matchups,
 		currentDepth:   0,
 		currentMatchup: 0,
 	}, nil
 }
 
 func (t *Tournament) CurrentMatchup() Matchup {
-	return *t.matchups[t.currentDepth][t.currentMatchup]
+	return *t.Matchups[t.currentDepth][t.currentMatchup]
 }
 
 func (t *Tournament) Submit(song1Score int, song2Score int) (done bool, err error) {
@@ -95,7 +98,7 @@ func (t *Tournament) Submit(song1Score int, song2Score int) (done bool, err erro
 		t.insertToNextRound(winner)
 
 		t.currentMatchup++
-		if t.currentMatchup == len(t.matchups[t.currentDepth]) {
+		if t.currentMatchup == len(t.Matchups[t.currentDepth]) {
 			// depth complete => move to next depth
 			t.currentDepth++
 			t.currentMatchup = 0
@@ -112,7 +115,7 @@ func (t *Tournament) insertToNextRound(song *Song) {
 		return
 	}
 
-	nextRoundMatchups := t.matchups[t.currentDepth+1]
+	nextRoundMatchups := t.Matchups[t.currentDepth+1]
 	fmt.Printf("nextRoundMatchups: %v\n", nextRoundMatchups)
 
 	for i, matchup := range nextRoundMatchups {

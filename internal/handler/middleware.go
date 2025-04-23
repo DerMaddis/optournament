@@ -29,12 +29,7 @@ func (h *Handler) userMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		jwtCookie, err := c.Cookie("jwt")
 		if err != nil {
-			customContext := &customcontext.CustomContext{
-				DiscordUser: discord.APIUser{},
-				LoggedIn:    false,
-				Context:     c,
-			}
-			return next(customContext)
+			return c.Redirect(http.StatusUnauthorized, "/")
 		}
 
 		token, err := jwt.Parse(jwtCookie.Value, func(t *jwt.Token) (any, error) {
@@ -44,12 +39,12 @@ func (h *Handler) userMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			return []byte("THE_ULT1M4TE_S3CRET"), nil
 		})
 		if err != nil {
-			return c.String(http.StatusUnauthorized, "unauthorized")
+			return c.Redirect(http.StatusUnauthorized, "/")
 		}
 
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok {
-			return c.String(http.StatusUnauthorized, "unauthorized")
+			return c.Redirect(http.StatusUnauthorized, "/")
 		}
 
 		expiryInt := int64(claims["expiry"].(float64))

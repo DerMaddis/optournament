@@ -90,8 +90,8 @@ func TestTournament(t *testing.T) {
 
 	// ---------------------------- Depth 0
 
-	assert.Equal(8, len(tournament.matchups[0]))
-	for i, matchup := range tournament.matchups[0] {
+	assert.Equal(8, len(tournament.Matchups[0]))
+	for i, matchup := range tournament.Matchups[0] {
 		assert.Equal(&songs[i*2], matchup.Song1)
 		assert.Equal(&songs[i*2+1], matchup.Song2)
 	}
@@ -120,8 +120,8 @@ func TestTournament(t *testing.T) {
 	// {"o"}, W -
 	// {"p"},
 
-	assert.Equal(len(tournament.matchups[1]), 4)
-	for i, matchup := range tournament.matchups[1] {
+	assert.Equal(len(tournament.Matchups[1]), 4)
+	for i, matchup := range tournament.Matchups[1] {
 		assert.NotNil(matchup)
 		switch i {
 		case 0:
@@ -161,8 +161,8 @@ func TestTournament(t *testing.T) {
 	// {"n"},   |   |
 	// {"o"}, W - W -
 	// {"p"},
-	assert.Equal(2, len(tournament.matchups[2]))
-	for i, matchup := range tournament.matchups[2] {
+	assert.Equal(2, len(tournament.Matchups[2]))
+	for i, matchup := range tournament.Matchups[2] {
 		assert.NotNil(matchup)
 		switch i {
 		case 0:
@@ -195,7 +195,7 @@ func TestTournament(t *testing.T) {
 	// {"o"}, W - W - W -
 	// {"p"},
 
-	assert.Equal(1, len(tournament.matchups[3]))
-	assert.Equal("c", tournament.matchups[3][0].Song1.Url)
-	assert.Equal("o", tournament.matchups[3][0].Song2.Url)
+	assert.Equal(1, len(tournament.Matchups[3]))
+	assert.Equal("c", tournament.Matchups[3][0].Song1.Url)
+	assert.Equal("o", tournament.Matchups[3][0].Song2.Url)
 }

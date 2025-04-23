@@ -8,12 +8,14 @@ import (
 
 	"github.com/dermaddis/op_tournament/internal/handler/routes/auth"
 	"github.com/dermaddis/op_tournament/internal/handler/routes/ws"
+	"github.com/dermaddis/op_tournament/internal/service"
 	"github.com/dermaddis/op_tournament/internal/websocket"
 	"github.com/labstack/echo/v4"
 )
 
 type Handler struct {
 	e       *echo.Echo
+	service *service.Service
 	ws      *websocket.WebsocketHandler
 	log     *slog.Logger
 	routers routers
@@ -24,12 +26,13 @@ type routers struct {
 	ws   *ws.WsRouter
 }
 
-func New(wsHandler *websocket.WebsocketHandler, log *slog.Logger) *Handler {
+func New(service *service.Service, wsHandler *websocket.WebsocketHandler, log *slog.Logger) *Handler {
 	e := echo.New()
 	handler := &Handler{
-		e:   e,
-		ws:  wsHandler,
-		log: log,
+		e:       e,
+		service: service,
+		ws:      wsHandler,
+		log:     log,
 		routers: routers{
 			auth: auth.New(e.Group("/auth"), log),
 			ws:   ws.New(e.Group("/ws"), wsHandler, log),

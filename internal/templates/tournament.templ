@@ -1,0 +1,81 @@
+package templates
+
+import "github.com/dermaddis/op_tournament/internal/model/tournament"
+
+import "github.com/dermaddis/op_tournament/internal/handler/customcontext"
+
+templ Tournament(customContext *customcontext.CustomContext, tournament *tournament.Tournament) {
+	{{ noMatch := "_" }}
+	@Index(customContext) {
+		<h1>Tournament { tournament.Id }</h1>
+		<div class="tournament">
+			<div class="side left">
+				for _, matchups := range tournament.Matchups[:len(tournament.Matchups)-1] {
+					<div class="col">
+						for _, matchup := range matchups[:len(matchups)/2] {
+							<div class="element">
+								if matchup != nil && matchup.Song1 != nil {
+									{ matchup.Song1.Url }
+								} else {
+									{ noMatch }
+								}
+							</div>
+							<div class="element">
+								if matchup != nil && matchup.Song2 != nil {
+									{ matchup.Song2.Url }
+								} else {
+									{ noMatch }
+								}
+							</div>
+						}
+					</div>
+				}
+				{{ last := tournament.Matchups[len(tournament.Matchups)-1][0] }}
+				<div class="col">
+					<div class="element">
+						if last != nil && last.Song1 != nil {
+							{ last.Song1.Url }
+						} else {
+							{ noMatch }
+						}
+					</div>
+				</div>
+			</div>
+			<div class="side right">
+				for _, matchups := range tournament.Matchups[:len(tournament.Matchups)-1] {
+					<div class="col">
+						for _, matchup := range matchups[len(matchups)/2:] {
+							<div class="element">
+								if matchup != nil && matchup.Song1 != nil {
+									{ matchup.Song1.Url }
+								} else {
+									{ noMatch }
+								}
+							</div>
+							<div class="element">
+								if matchup != nil && matchup.Song2 != nil {
+									{ matchup.Song2.Url }
+								} else {
+									{ noMatch }
+								}
+							</div>
+						}
+					</div>
+				}
+				<div class="col">
+					<div class="element">
+						if last != nil && last.Song2 != nil {
+							{ last.Song2.Url }
+						} else {
+							{ noMatch }
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="currentMatchup">
+			<div class="matchup">{ tournament.CurrentMatchup().Song1.Url }</div>
+			<div class="matchup">{ tournament.CurrentMatchup().Song2.Url }</div>
+		</div>
+	}
+}

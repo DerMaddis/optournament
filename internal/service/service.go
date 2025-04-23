@@ -57,12 +57,15 @@ func (s *Service) NewTournament(songs []tournament.Song, userId string) (string,
 		inviteIds:     nil,
 	}
 
-	tId := xid.New()
+	for range 9 {
+		wrapper.tournament.Submit(1, 0)
+	}
+
 	s.tournamentsMu.Lock()
-	s.tournaments[tId.String()] = &wrapper
+	s.tournaments["d04apidug4q34mvd0urg"] = &wrapper
 	s.tournamentsMu.Unlock()
 
-	return tId.String(), nil
+	return tournament.Id, nil
 }
 
 func (s *Service) NewInviteId(tournamentId, userId string) (string, error) {
@@ -78,6 +81,23 @@ func (s *Service) NewInviteId(tournamentId, userId string) (string, error) {
 	tWrapper.inviteIds = append(tWrapper.inviteIds, inviteId.String())
 
 	return inviteId.String(), nil
+}
+
+func (s *Service) Tournament(tournamentId, userId string) (*tournament.Tournament, error) {
+	s.tournamentsMu.RLock()
+	defer s.tournamentsMu.RUnlock()
+
+	tWrapper, ok := s.tournaments[tournamentId]
+	if !ok {
+		return nil, errs.ErrNotFound.Tournament
+	}
+
+	_, ok = tWrapper.usersAndVotes[userId]
+	if !ok {
+		return nil, errs.ErrNotFound.Tournament
+	}
+
+	return tWrapper.tournament, nil
 }
 
 func (s *Service) Join(tournamentId, inviteId, userId string) error {
